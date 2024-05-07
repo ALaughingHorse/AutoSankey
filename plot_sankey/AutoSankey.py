@@ -20,7 +20,7 @@ class AutoSankey:
     self.layers = [x for x in agg_table.columns]
     self.layers.remove(self.metric_col)
 
-  def plot(self):
+  def plot(self, plot_orientation='h'):
     nodes = []
     # Create table that replace all values in the table with the actual name of the node
     agg_nodes = self.agg.copy()
@@ -72,6 +72,7 @@ class AutoSankey:
     # Make the final plot
     fig = go.Figure(data=[go.Sankey(
             arrangement = "snap",
+            orientation=plot_orientation,
             node = dict(
               pad = 15,
               thickness = 20,

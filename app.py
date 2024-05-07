@@ -35,6 +35,17 @@ if get_data:
         ss['tb'] = tb
 
 if ss['tb'] is not None:
+    
+    column_arrangement = st.multiselect(
+        label = 'Select Columns to include and arrange order',
+        options = ss['tb'].columns.values,
+        default = ss['tb'].columns.values
+    )
+
+    re_arrange = st.button('Re Arrange')
+    
+    if re_arrange:
+        ss['tb'] = ss.tb[column_arrangement]
     displayed_table, inputs = st.columns([80, 20])
     
     with displayed_table:
@@ -48,8 +59,12 @@ if ss['tb'] is not None:
         mother_node = st.text_input(
             label = 'Specify the name of the mother node (Top of funnel)'
         )
+        orientation = st.selectbox(
+            label = 'select orientation of plot',
+            options = ['h','v']
+        )
         plot = st.button('Plot Funnel')
 
     if plot:
-        sankey = AutoSankey(agg_table=ss['tb'], metric_col=metric_col, mother_node=mother_node).plot()
+        sankey = AutoSankey(agg_table=ss['tb'], metric_col=metric_col, mother_node=mother_node).plot(plot_orientation=orientation)
         st.plotly_chart(sankey, use_container_width=True)
