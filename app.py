@@ -3,10 +3,21 @@ import streamlit as st
 import pandas as pd 
 import numpy as np
 from plot_sankey.AutoSankey import AutoSankey
+import io
 
 st.set_page_config(
     layout="wide"
 )
+
+# Config the muti-select input to not truncate
+st.markdown("""
+    <style>
+        .stMultiSelect [data-baseweb=select] span{
+            max-width: 500px;
+            font-size: 0.8rem;
+        }
+    </style>
+    """, unsafe_allow_html=True)
 
 if 'tb' not in ss:
     ss['tb'] = None
@@ -23,19 +34,23 @@ ss['input_method'] = st.selectbox(
 if ss['input_method'] == 'Upload .csv file':
     raw_data = st.file_uploader("Upload your .csv file")
 else:
-    raw_data = st.text_input(
-         label='Copy your data table as a tsv string'
+    raw_data = st.text_area(
+         label='Copy your data table as a csv string'
     )
 
 get_data = st.button('Import Data')
 
 if get_data:
-    if raw_data is not None:
+    if (raw_data is not None) & (ss['input_method']=='Upload .csv file'):
         tb = pd.read_csv(raw_data)
         ss['tb'] = tb
 
+    else:
+        raw_data = io.StringIO(raw_data)
+        tb = pd.read_csv(raw_data)
+        ss['tb'] = tb
 if ss['tb'] is not None:
-    
+
     column_arrangement = st.multiselect(
         label = 'Select Columns to include and arrange order',
         options = ss['tb'].columns.values,

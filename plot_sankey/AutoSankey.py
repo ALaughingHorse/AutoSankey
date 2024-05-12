@@ -30,12 +30,12 @@ class AutoSankey:
       # reserve index 0 for the mother node
       nodes_dict = {nodes[i]:(i+1) for i in range(len(nodes))}
 
-    # Add the mother node insto the nodes dictionary
+    # Add the mother node into the nodes dictionary
     nodes_dict[self.mother_node] = 0
-
+    self.nodes_dict = nodes_dict
     # Add the mode node into the list of nodes
     nodes = [self.mother_node] + nodes
-
+    self.nodes = nodes
     # Translate the agg_nodes table to the index
     agg_nodes_idx = agg_nodes.copy()
     for col in self.layers:
@@ -74,7 +74,7 @@ class AutoSankey:
             arrangement = "snap",
             orientation=plot_orientation,
             node = dict(
-              pad = 15,
+              pad = 20,
               thickness = 20,
               line = dict(color = "black", width = 0.5),
               label = nodes,
