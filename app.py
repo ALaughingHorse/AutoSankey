@@ -28,7 +28,7 @@ data_input, file_uploader, get_data_button = st.columns([40,40,20])
 
 ss['input_method'] = st.selectbox(
     label = 'How do you want to import data?',
-    options = ['Upload .csv file', 'Paste the table as a csv string']
+    options = ['Paste the table as a csv string','Upload .csv file']
 )
 
 if ss['input_method'] == 'Upload .csv file':
@@ -102,7 +102,3 @@ if ss['tb'] is not None:
         funnel = AutoSankeyFunnel(agg_table=ss['tb'], metric_col=metric_col, mother_node=mother_node).plot_funnel(ss['funnel_visible_class_dict'])
         st.plotly_chart(funnel, use_container_width=True)
             
-
-            
-
-
