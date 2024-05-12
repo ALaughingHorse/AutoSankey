@@ -23,6 +23,9 @@ if 'tb' not in ss:
     ss['tb'] = None
 if 'input_method' not in ss:
     ss['input_method'] = 'Upload .csv file'
+
+if 'funnel_visible_class_dict' not in ss:
+    ss['funnel_visible_class_dict']={}
 # data uploader
 data_input, file_uploader, get_data_button = st.columns([40,40,20])
 
@@ -60,6 +63,9 @@ if ss['tb'] is not None:
     
     if re_arrange:
         ss['tb'] = ss.tb[column_arrangement]
+        # Reset
+        ss['funnel_visible_class_dict']={}
+    
     displayed_table, inputs = st.columns([80, 20])
     
     with displayed_table:
