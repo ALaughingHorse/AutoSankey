@@ -2,7 +2,7 @@ from streamlit import session_state as ss
 import streamlit as st
 import pandas as pd 
 import numpy as np
-from plot_sankey.AutoSankey import AutoSankey
+from plot_sankey.AutoSankey import AutoSankeyFunnel
 import io
 
 st.set_page_config(
@@ -28,7 +28,7 @@ data_input, file_uploader, get_data_button = st.columns([40,40,20])
 
 ss['input_method'] = st.selectbox(
     label = 'How do you want to import data?',
-    options = ['Upload .csv file', 'Paste the table as a tsv string']
+    options = ['Upload .csv file', 'Paste the table as a csv string']
 )
 
 if ss['input_method'] == 'Upload .csv file':
@@ -50,7 +50,6 @@ if get_data:
         tb = pd.read_csv(raw_data)
         ss['tb'] = tb
 if ss['tb'] is not None:
-
     column_arrangement = st.multiselect(
         label = 'Select Columns to include and arrange order',
         options = ss['tb'].columns.values,
@@ -78,8 +77,32 @@ if ss['tb'] is not None:
             label = 'select orientation of plot',
             options = ['h','v']
         )
-        plot = st.button('Plot Funnel')
+        plot = st.button('Plot Sankey')
 
     if plot:
-        sankey = AutoSankey(agg_table=ss['tb'], metric_col=metric_col, mother_node=mother_node).plot(plot_orientation=orientation)
+        sankey = AutoSankeyFunnel(agg_table=ss['tb'], metric_col=metric_col, mother_node=mother_node).plot_sankey(plot_orientation=orientation)
         st.plotly_chart(sankey, use_container_width=True)
+
+    
+    st.divider()
+    funnel_input_selectors, funnel_chart = st.columns([20,80])
+
+    with funnel_input_selectors:
+        for col in ss['tb'].drop(metric_col,axis=1).columns:
+            st.selectbox(
+                label=col,
+                options = list(set(ss['tb'][col])),
+                key='k-'+col
+            )
+            ss['funnel_visible_class_dict'][col] = ss['k-'+col]
+        # plot_funnel_button = st.button('Plot Funnel')
+    
+    with funnel_chart:
+        # if plot_funnel_button:
+        funnel = AutoSankeyFunnel(agg_table=ss['tb'], metric_col=metric_col, mother_node=mother_node).plot_funnel(ss['funnel_visible_class_dict'])
+        st.plotly_chart(funnel, use_container_width=True)
+            
+
+            
+
+

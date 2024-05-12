@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 
-class AutoSankey:
+class AutoSankeyFunnel:
 
   def __init__(self, agg_table, metric_col, mother_node='all'):
     """
@@ -20,7 +20,7 @@ class AutoSankey:
     self.layers = [x for x in agg_table.columns]
     self.layers.remove(self.metric_col)
 
-  def plot(self, plot_orientation='h'):
+  def plot_sankey(self, plot_orientation='h'):
     nodes = []
     # Create table that replace all values in the table with the actual name of the node
     agg_nodes = self.agg.copy()
@@ -90,4 +90,24 @@ class AutoSankey:
               hovertemplate='Raw %{value}; CVR %{customdata}<extra></extra>',  
           ))])
     
+    return fig
+  
+  def plot_funnel(self, funnel_visible_class_dict):
+    temp = self.agg.copy()
+    funnel_layers = [self.mother_node]
+    funnel_layer_values = [self.agg[self.metric_col].sum()]
+    
+    for k,v in funnel_visible_class_dict.items():
+        temp = temp[temp[k]==v]
+        funnel_layer_values.append(temp[self.metric_col].sum())
+        funnel_layers.append('-'.join([str(k),str(v)]))
+
+    fig = go.Figure(go.Funnel(
+      y = funnel_layers,
+      x = funnel_layer_values,
+      textposition = "inside",
+      textinfo = "value+percent previous",
+      opacity = 0.65, 
+      connector = {"line": {"color": "royalblue", "dash": "dot", "width": 3}})
+      )
     return fig
