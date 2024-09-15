@@ -98,16 +98,18 @@ class AutoSankeyFunnel:
     funnel_layer_values = [self.agg[self.metric_col].sum()]
 
     for k,v in funnel_visible_class_dict.items():
-        temp = temp[temp[k]==v]
+        temp = temp[[x in v for x in temp[k]]]
         funnel_layer_values.append(temp[self.metric_col].sum())
         funnel_layers.append('-'.join([str(k),str(v)]))
 
     fig = go.Figure(go.Funnel(
-      y = funnel_layers,
-      x = funnel_layer_values,
-      textposition = "inside",
-      textinfo = "percent previous",
-      opacity = 0.65, 
-      connector = {"line": {"color": "royalblue", "dash": "dot", "width": 3}})
+        y = funnel_layers,
+        x = funnel_layer_values,
+        textposition = "inside",
+        textinfo = 'value+percent previous+percent initial',
+        opacity = 0.65, 
+        connector = {"line": {"color": "royalblue", "dash": "dot", "width": 3}}
+        )
       )
+    
     return fig

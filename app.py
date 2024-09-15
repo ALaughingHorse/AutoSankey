@@ -59,7 +59,7 @@ if ss['tb'] is not None:
         default = ss['tb'].columns.values
     )
 
-    re_arrange = st.button('Re Arrange')
+    re_arrange = st.button('Re-arrange table and refresh')
     
     if re_arrange:
         ss['tb'] = ss.tb[column_arrangement]
@@ -76,6 +76,7 @@ if ss['tb'] is not None:
             label = 'Specify the name of the metric column',
             options = ss['tb'].columns
         )
+        
         mother_node = st.text_input(
             label = 'Specify the name of the mother node (Top of funnel)'
         )
@@ -92,19 +93,19 @@ if ss['tb'] is not None:
     
     st.divider()
     funnel_input_selectors, funnel_chart = st.columns([20,80])
-
     with funnel_input_selectors:
         for col in ss['tb'].drop(metric_col,axis=1).columns:
-            st.selectbox(
+            st.multiselect(
                 label=col,
                 options = list(set(ss['tb'][col])),
                 key='k-'+col
             )
             ss['funnel_visible_class_dict'][col] = ss['k-'+col]
-        # plot_funnel_button = st.button('Plot Funnel')
+        plot_funnel_button = st.button('Plot Funnel')
     
     with funnel_chart:
-        # if plot_funnel_button:
-        funnel = AutoSankeyFunnel(agg_table=ss['tb'], metric_col=metric_col, mother_node=mother_node).plot_funnel(ss['funnel_visible_class_dict'])
-        st.plotly_chart(funnel, use_container_width=True)
+        if plot_funnel_button:
+            # Reset the 
+            funnel = AutoSankeyFunnel(agg_table=ss['tb'], metric_col=metric_col, mother_node=mother_node).plot_funnel(ss['funnel_visible_class_dict'])
+            st.plotly_chart(funnel, use_container_width=True)
             
