@@ -85,10 +85,19 @@ class AutoSankeyFunnel:
               source = mapping_table.source,
               target = mapping_table.target,
               value = mapping_table.value,
-              label = [str(round(x,1))+'%' for x in mapping_table.step_cvr*100],
+              label = [f"{round(x*100,1)}%" for x in mapping_table.step_cvr],
               customdata = [str(round(x,1))+'%' for x in mapping_table.step_cvr*100],
+              color = "rgba(0,0,255,0.4)",  # semi-transparent blue
               hovertemplate='Raw %{value}; CVR %{customdata}<extra></extra>',  
           ))])
+
+    # Update layout to ensure labels are visible
+    fig.update_layout(
+        font_size=12,
+        font_family="Arial",
+        plot_bgcolor='white',
+        paper_bgcolor='white'
+    )
     
     return fig
   

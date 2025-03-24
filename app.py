@@ -98,7 +98,8 @@ if ss['tb'] is not None:
             st.multiselect(
                 label=col,
                 options = list(set(ss['tb'][col])),
-                key='k-'+col
+                key='k-'+col,
+                default=max(list(set(ss['tb'][col])))
             )
             ss['funnel_visible_class_dict'][col] = ss['k-'+col]
         plot_funnel_button = st.button('Plot Funnel')
